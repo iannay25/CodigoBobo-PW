@@ -220,6 +220,10 @@ function showResult() {
     document.getElementById("meme-description").textContent = meme.description;
 
     document.getElementById("result").classList.remove("hidden");
+
+    const audio = document.getElementById("result-audio");
+    audio.play();
 }
 
 window.onload = loadQuestion;
+
