@@ -13,9 +13,9 @@ const memes = {
     "Tranquilo": { image: "imagens/meme4.jpg", description: "Você é o meme do 'Que deselegante'." },
     "Irritado": { image: "imagens/meme5.jpg", description: "Você é o meme do 'Por que você não amadurece?'" },
     "Sarcastico": { image: "imagens/meme6.jpg", description: "Você é o meme do 'Parece que o jogo virou'." },
-    "Relaxar": { image: "imagens/meme7.png", description: "Você é o meme do 'Isso é muito Black Mirror'." },
-    "Conversar": { image: "imagens/meme8.png", description: "Você é o meme do 'Eu sou rica!'." },
-    "Assistir TV": { image: "imagens/meme9.png", description: "Você é o meme do 'Breno Inform'." }
+    "Agradece": { image: "imagens/meme7.png", description: "Você é o meme do 'Isso é muito Black Mirror'." },
+    "Fica chocado": { image: "imagens/meme8.png", description: "Você é o meme do 'Eu sou rica!'." },
+    "Desconfia": { image: "imagens/meme9.png", description: "Você é o meme do 'Breno Inform'." }
 };
 
 let currentQuestionIndex = 0;
@@ -47,24 +47,178 @@ function selectAnswer(answer) {
     }
 }
 
-function showResult() {
-    document.querySelector(".quiz-container").classList.add("hidden");
-
-    const finalAnswer = selectedAnswers[selectedAnswers.length - 1];
-    const meme = memes[finalAnswer];
-
-    document.getElementById("meme-image").src = meme.image;
-    document.getElementById("meme-description").textContent = meme.description;
-
-    document.getElementById("result").classList.remove("hidden");
-}
-
 function restartQuiz() {
     selectedAnswers = [];
     currentQuestionIndex = 0;
     document.getElementById("result").classList.add("hidden");
     document.querySelector(".quiz-container").classList.remove("hidden");
     loadQuestion();
+}
+
+const specificPaths = {
+    "Alta,Tranquilo,Relaxar,Ri,Agradece": "Alta",
+    "Nenhuma,Sarcastico,Conversar,Fica bravo,Fica chocado": "Nenhuma",
+    "Moderada,Sarcastico,Conversar,Desencana,Agradece": "Moderada",
+    "Moderada,Tranquilo,Assistir TV,Fica bravo,Agradece": "Fica bravo",
+    "Nenhuma,Sarcastico,Relaxar,Fica bravo,Agradece": "Tranquilo",
+    "Alta,Irritado,Assistir TV,Desencana,Desconfia": "Desconfia",
+    "Moderada,Irritado,Assistir TV,Ri,Agradece": "Agradece",
+    "Nenhuma,Irritado,Assistir TV,Desencana,Fica chocado": "Fica chocado",
+    "Nenhuma,Irritado,Relaxar,Fica bravo,Agradece": "Agradece",
+    "Alta,Irritado,Conversar,Fica bravo,Fica chocado": "Fica chocado",
+    "Alta,Sarcastico,Relaxar,Desencana,Desconfia": "Desconfia",
+    "Alta,Sarcastico,Conversar,Ri,Fica chocado": "Sarcastico",
+    "Alta,Tranquilo,Conversar,Fica bravo,Agradece": "Agradece",
+    "Nenhuma,Tranquilo,Relaxar,Desencana,Agradece": "Agradece",
+    "Nenhuma,Irritado,Assistir TV,Ri,Fica chocado": "Fica chocado",
+    "Alta,Irritado,Relaxar,Ri,Desconfia": "Desconfia",
+    "Moderada,Sarcastico,Relaxar,Ri,Fica chocado": "Tranquilo",
+    "Alta,Irritado,Assistir TV,Ri,Fica chocado": "Nenhuma",
+    "Nenhuma,Irritado,Conversar,Desencana,Agradece": "Conversar",
+    "Moderada,Sarcastico,Conversar,Ri,Desconfia": "Ri",
+    "Nenhuma,Irritado,Relaxar,Ri,Desconfia": "Relaxar",
+    "Nenhuma,Sarcastico,Assistir TV,Desencana,Desconfia": "Assistir TV",
+    "Moderada,Tranquilo,Relaxar,Ri,Fica chocado": "Tranquilo",
+    "Alta,Irritado,Assistir TV,Desencana,Fica chocado": "Irritado",
+    "Moderada,Sarcastico,Relaxar,Desencana,Desconfia": "Desencana",
+    "Nenhuma,Tranquilo,Relaxar,Fica bravo,Agradece": "Fica bravo",
+    "Nenhuma,Sarcastico,Assistir TV,Ri,Fica chocado": "Assistir TV",
+    "Alta,Irritado,Relaxar,Fica bravo,Desconfia": "Desconfia",
+    "Nenhuma,Tranquilo,Assistir TV,Desencana,Desconfia": "Desconfia",
+    "Alta,Irritado,Assistir TV,Desencana,Agradece": "Agradece",
+    "Nenhuma,Irritado,Conversar,Desencana,Agradece": "Agradece",
+    "Nenhuma,Tranquilo,Relaxar,Ri,Desconfia": "Desconfia",
+    "Moderada,Tranquilo,Assistir TV,Fica bravo,Fica chocado": "Fica chocado",
+    "Moderada,Sarcastico,Assistir TV,Fica bravo,Agradece": "Agradece",
+    "Alta,Sarcastico,Conversar,Desencana,Agradece": "Agradece",
+    "Nenhuma,Tranquilo,Assistir TV,Ri,Fica chocado": "Fica chocado",
+    "Moderada,Tranquilo,Relaxar,Ri,Agradece": "Agradece",
+    "Nenhuma,Sarcastico,Relaxar,Fica bravo,Fica chocado": "Fica chocado",
+    "Moderada,Irritado,Relaxar,Ri,Desconfia": "Desconfia",
+    "Alta,Tranquilo,Assistir TV,Ri,Fica chocado": "Fica chocado",
+    "Nenhuma,Irritado,Conversar,Ri,Agradece": "Agradece",
+    "Alta,Tranquilo,Assistir TV,Ri,Agradece": "Agradece",
+    "Nenhuma,Irritado,Conversar,Ri,Desconfia": "Desconfia",
+    "Nenhuma,Sarcastico,Conversar,Fica bravo,Agradece": "Agradece",
+    "Moderada,Irritado,Conversar,Fica bravo,Desconfia": "Desconfia",
+    "Nenhuma,Irritado,Relaxar,Desencana,Fica chocado": "Fica chocado",
+    "Alta,Sarcastico,Relaxar,Ri,Agradece": "Agradece",
+    "Moderada,Tranquilo,Relaxar,Fica bravo,Fica chocado": "Fica chocado",
+    "Nenhuma,Sarcastico,Relaxar,Fica bravo,Desconfia": "Desconfia",
+    "Moderada,Sarcastico,Assistir TV,Ri,Agradece": "Agradece",
+    "Nenhuma,Irritado,Assistir TV,Fica bravo,Desconfia": "Desconfia",
+    "Nenhuma,Tranquilo,Conversar,Fica bravo,Desconfia": "Desconfia",
+    "Moderada,Irritado,Assistir TV,Ri,Agradece": "Agradece",
+    "Alta,Tranquilo,Relaxar,Desencana,Fica chocado": "Fica chocado",
+    "Moderada,Tranquilo,Assistir TV,Desencana,Fica chocado": "Fica chocado",
+    "Alta,Irritado,Relaxar,Fica bravo,Agradece": "Agradece",
+    "Moderada,Sarcastico,Relaxar,Fica bravo,Fica chocado": "Fica chocado",
+    "Nenhuma,Irritado,Assistir TV,Fica bravo,Fica chocado": "Fica chocado",
+    "Alta,Sarcastico,Relaxar,Ri,Desconfia": "Desconfia",
+    "Moderada,Tranquilo,Assistir TV,Ri,Desconfia": "Desconfia",
+    "Moderada,Tranquilo,Conversar,Desencana,Desconfia": "Desconfia",
+    "Nenhuma,Tranquilo,Relaxar,Fica bravo,Desconfia": "Desconfia",
+    "Moderada,Tranquilo,Relaxar,Desencana,Desconfia": "Desconfia",
+    "Moderada,Irritado,Conversar,Ri,Agradece": "Agradece",
+    "Nenhuma,Irritado,Assistir TV,Ri,Agradece": "Agradece",
+    "Nenhuma,Tranquilo,Assistir TV,Fica bravo,Desconfia": "Desconfia",
+    "Alta,Irritado,Relaxar,Ri,Agradece": "Agradece",
+    "Nenhuma,Irritado,Conversar,Desencana,Fica chocado": "Fica chocado",
+    "Nenhuma,Sarcastico,Relaxar,Ri,Agradece": "Agradece",
+    "Alta,Tranquilo,Relaxar,Desencana,Fica chocado": "Fica chocado",
+    "Moderada,Tranquilo,Assistir TV,Desencana,Desconfia": "Desconfia",
+    "Moderada,Tranquilo,Relaxar,Fica bravo,Desconfia": "Desconfia",
+    "Alta,Sarcastico,Conversar,Desencana,Agradece": "Agradece",
+    "Alta,Irritado,Assistir TV,Ri,Fica chocado": "Fica chocado",
+    "Moderada,Irritado,Relaxar,Ri,Agradece": "Agradece",
+    "Moderada,Tranquilo,Assistir TV,Fica bravo,Desconfia": "Desconfia",
+    "Moderada,Sarcastico,Relaxar,Fica bravo,Desconfia": "Desconfia",
+    "Nenhuma,Tranquilo,Assistir TV,Desencana,Agradece": "Agradece",
+    "Nenhuma,Tranquilo,Conversar,Fica bravo,Desconfia": "Desconfia",
+    "Nenhuma,Irritado,Assistir TV,Ri,Fica chocado": "Fica chocado",
+    "Moderada,Irritado,Assistir TV,Desencana,Agradece": "Agradece",
+    "Nenhuma,Sarcastico,Conversar,Desencana,Desconfia": "Desconfia",
+    "Moderada,Sarcastico,Assistir TV,Ri,Fica chocado": "Fica chocado",
+    "Nenhuma,Sarcastico,Conversar,Fica bravo,Agradece": "Agradece",
+    "Nenhuma,Tranquilo,Relaxar,Ri,Fica chocado": "Fica chocado",
+    "Nenhuma,Tranquilo,Conversar,Desencana,Desconfia": "Desconfia",
+    "Alta,Irritado,Relaxar,Ri,Agradece": "Agradece",
+    "Alta,Irritado,Relaxar,Desencana,Fica chocado": "Fica chocado",
+    "Nenhuma,Irritado,Assistir TV,Fica bravo,Desconfia": "Desconfia",
+    "Alta,Sarcastico,Assistir TV,Ri,Fica chocado": "Fica chocado",
+    "Moderada,Irritado,Assistir TV,Ri,Desconfia": "Desconfia",
+    "Alta,Tranquilo,Relaxar,Fica bravo,Desconfia": "Desconfia",
+    "Nenhuma,Irritado,Assistir TV,Ri,Fica chocado": "Fica chocado",
+    "Moderada,Sarcastico,Conversar,Ri,Agradece": "Agradece",
+    "Alta,Tranquilo,Relaxar,Fica bravo,Agradece": "Agradece",
+    "Moderada,Sarcastico,Relaxar,Fica bravo,Agradece": "Agradece",
+    "Alta,Sarcastico,Relaxar,Ri,Fica chocado": "Fica chocado",
+    "Alta,Irritado,Conversar,Ri,Fica chocado": "Fica chocado",
+    "Alta,Irritado,Assistir TV,Fica bravo,Desconfia": "Desconfia",
+    "Moderada,Sarcastico,Assistir TV,Fica bravo,Desconfia": "Desconfia",
+    "Nenhuma,Tranquilo,Assistir TV,Fica bravo,Fica chocado": "Fica chocado",
+    "Alta,Irritado,Assistir TV,Desencana,Desconfia": "Desconfia",
+    "Nenhuma,Sarcastico,Assistir TV,Ri,Fica chocado": "Fica chocado",
+    "Alta,Sarcastico,Assistir TV,Fica bravo,Desconfia": "Desconfia",
+    "Nenhuma,Irritado,Conversar,Desencana,Agradece": "Agradece",
+    "Nenhuma,Sarcastico,Assistir TV,Ri,Agradece": "Agradece",
+    "Nenhuma,Tranquilo,Assistir TV,Desencana,Agradece": "Agradece",
+    "Moderada,Tranquilo,Conversar,Fica bravo,Fica chocado": "Fica chocado",
+    "Moderada,Tranquilo,Assistir TV,Ri,Desconfia": "Desconfia",
+    "Alta,Sarcastico,Conversar,Ri,Agradece": "Agradece",
+    "Alta,Sarcastico,Assistir TV,Ri,Desconfia": "Desconfia",
+    "Moderada,Irritado,Relaxar,Fica bravo,Agradece": "Agradece",
+    "Nenhuma,Tranquilo,Assistir TV,Ri,Agradece": "Agradece",
+    "Alta,Tranquilo,Relaxar,Desencana,Desconfia": "Desconfia",
+    "Moderada,Irritado,Assistir TV,Desencana,Fica chocado": "Fica chocado",
+    "Alta,Tranquilo,Assistir TV,Ri,Fica chocado": "Fica chocado",
+    "Moderada,Irritado,Conversar,Fica bravo,Fica chocado": "Fica chocado",
+    "Moderada,Sarcastico,Assistir TV,Desencana,Fica chocado": "Fica chocado",
+    "Nenhuma,Tranquilo,Relaxar,Fica bravo,Fica chocado": "Fica chocado",
+    "Nenhuma,Tranquilo,Assistir TV,Fica bravo,Fica chocado": "Fica chocado",
+    "Moderada,Tranquilo,Relaxar,Fica bravo,Desconfia": "Desconfia",
+    "Moderada,Irritado,Relaxar,Desencana,Fica chocado": "Fica chocado",
+    "Nenhuma,Irritado,Relaxar,Ri,Fica chocado": "Fica chocado",
+    "Nenhuma,Tranquilo,Conversar,Desencana,Fica chocado": "Fica chocado",
+    "Moderada,Tranquilo,Conversar,Fica bravo,Agradece": "Agradece",
+    "Alta,Irritado,Assistir TV,Fica bravo,Agradece": "Agradece",
+    "Moderada,Tranquilo,Assistir TV,Desencana,Agradece": "Agradece"
+};
+
+function calculateFinalMeme() {
+    const answerPath = selectedAnswers.join(",");
+    if (specificPaths[answerPath]) {
+        return specificPaths[answerPath];
+    }
+
+    const answerCounts = selectedAnswers.reduce((acc, answer) => {
+        acc[answer] = (acc[answer] || 0) + 1;
+        return acc;
+    }, {});
+
+    let finalAnswer = selectedAnswers[selectedAnswers.length - 1];
+    let maxCount = 0;
+
+    for (const answer in answerCounts) {
+        if (answerCounts[answer] > maxCount) {
+            maxCount = answerCounts[answer];
+            finalAnswer = answer;
+        }
+    }
+
+    return finalAnswer;
+}
+
+function showResult() {
+    document.querySelector(".quiz-container").classList.add("hidden");
+
+    const finalAnswer = calculateFinalMeme();
+    const meme = memes[finalAnswer];
+
+    document.getElementById("meme-image").src = meme.image;
+    document.getElementById("meme-description").textContent = meme.description;
+
+    document.getElementById("result").classList.remove("hidden");
 }
 
 window.onload = loadQuestion;
