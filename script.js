@@ -1,63 +1,70 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('container');
+const questions = [
+    { question: "Qual seu nível de paciência?", options: ["Alta", "Moderada", "Nenhuma"] },
+    { question: "Como você reage em uma discussão?", options: ["Tranquilo", "Irritado", "Sarcastico"] },
+    { question: "Qual a sua atividade favorita?", options: ["Relaxar", "Conversar", "Assistir TV"] },
+    { question: "Quando algo não sai como planejado, você...", options: ["Ri", "Fica bravo", "Desencana"] },
+    { question: "Como você reage a uma surpresa?", options: ["Agradece", "Fica chocado", "Desconfia"] }
+];
 
-    function criarBola(x, y) {
-        const bola = document.createElement('div');
-        bola.classList.add('bola');
-        bola.style.left = `${x}px`;
-        bola.style.top = `${y}px`;
-        bola.style.backgroundColor = gerarCorAleatoria(); // Define uma cor aleatória
+const memes = {
+    "Alta": { image: "imagens/meme1.jpg", description: "Você é o meme da Nazaré confusa!" },
+    "Moderada": { image: "imagens/meme2.jpg", description: "Você é o meme do 'Já acabou, Jéssica?'" },
+    "Nenhuma": { image: "imagens/meme3.jpg", description: "Você é o meme do 'Ai que delícia, cara!'" },
+    "Tranquilo": { image: "imagens/meme4.jpg", description: "Você é o meme do 'Que deselegante'." },
+    "Irritado": { image: "imagens/meme5.jpg", description: "Você é o meme do 'Por que você não amadurece?'" },
+    "Sarcastico": { image: "imagens/meme6.jpg", description: "Você é o meme do 'Parece que o jogo virou'." },
+    "Relaxar": { image: "imagens/meme7.png", description: "Você é o meme do 'Isso é muito Black Mirror'." },
+    "Conversar": { image: "imagens/meme8.png", description: "Você é o meme do 'Eu sou rica!'." },
+    "Assistir TV": { image: "imagens/meme9.png", description: "Você é o meme do 'Breno Inform'." }
+};
 
-        bola.addEventListener('click', (e) => {
-            e.stopPropagation(); // Impede o clique de propagar para a bolinha pai
-            multiplicarBolinha(bola);
-        });
+let currentQuestionIndex = 0;
+let selectedAnswers = [];
 
-        container.appendChild(bola);
-        moverBola(bola);
+function loadQuestion() {
+    const questionContainer = document.getElementById("question-container");
+    questionContainer.innerHTML = "";
+
+    const question = document.createElement("h2");
+    question.textContent = questions[currentQuestionIndex].question;
+    questionContainer.appendChild(question);
+
+    questions[currentQuestionIndex].options.forEach(option => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.onclick = () => selectAnswer(option);
+        questionContainer.appendChild(button);
+    });
+}
+
+function selectAnswer(answer) {
+    selectedAnswers.push(answer);
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+    } else {
+        showResult();
     }
+}
 
-    function gerarCorAleatoria() {
-        const letras = '0123456789ABCDEF';
-        let cor = '#';
-        for (let i = 0; i < 6; i++) {
-            cor += letras[Math.floor(Math.random() * 16)];
-        }
-        return cor;
-    }
+function showResult() {
+    document.querySelector(".quiz-container").classList.add("hidden");
 
-    function multiplicarBolinha(bola) {
-        const posX = bola.offsetLeft;
-        const posY = bola.offsetTop;
+    const finalAnswer = selectedAnswers[selectedAnswers.length - 1];
+    const meme = memes[finalAnswer];
 
-        // Criar novas bolinhas em torno da original
-        criarBola(posX + 40, posY);
-        criarBola(posX - 40, posY);
-        criarBola(posX, posY + 40);
-        criarBola(posX, posY - 40);
-    }
+    document.getElementById("meme-image").src = meme.image;
+    document.getElementById("meme-description").textContent = meme.description;
 
-    function moverBola(bola) {
-        setInterval(() => {
-            const maxX = container.clientWidth - bola.clientWidth;
-            const maxY = container.clientHeight - bola.clientHeight;
+    document.getElementById("result").classList.remove("hidden");
+}
 
-            // Movimenta a bolinha para uma posição aleatória
-            const deltaX = (Math.random() - 0.5) * 20; // Movimento aleatório horizontal
-            const deltaY = (Math.random() - 0.5) * 20; // Movimento aleatório vertical
+function restartQuiz() {
+    selectedAnswers = [];
+    currentQuestionIndex = 0;
+    document.getElementById("result").classList.add("hidden");
+    document.querySelector(".quiz-container").classList.remove("hidden");
+    loadQuestion();
+}
 
-            let novaPosX = bola.offsetLeft + deltaX;
-            let novaPosY = bola.offsetTop + deltaY;
-
-            // Garantir que a bolinha não saia da tela
-            novaPosX = Math.max(0, Math.min(maxX, novaPosX));
-            novaPosY = Math.max(0, Math.min(maxY, novaPosY));
-
-            bola.style.left = `${novaPosX}px`;
-            bola.style.top = `${novaPosY}px`;
-        }, 100); // Movimenta a cada 100 milissegundos
-    }
-
-    // Criar a primeira bolinha no centro
-    criarBola(container.clientWidth / 2, container.clientHeight / 2);
-});
+window.onload = loadQuestion;
