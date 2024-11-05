@@ -18,6 +18,31 @@ const memes = {
     "Desconfia": { image: "imagens/meme9.png", description: "Você é o meme do 'Breno Inform'." }
 };
 
+const audioFiles = [
+    "/sons/ah-droga.mp3",
+    "/sons/ai-vc-me-quebra.mp3",
+    "/sons/bafomeeeeeeeeeee.mp3",
+    "/sons/bom-dia-chefe.mp3",
+    "/sons/caganeira-gordurosa.mp3",
+    "/sons/calma-ai-paizao.mp3",
+    "/sons/coringando.mp3",
+    "/sons/cr7-bom-dia.mp3",
+    "/sons/dom-dom-tava-aqui-no-baile.mp3",
+    "/sons/e-gamba-ou-manganga.mp3",
+    "/sons/eduardo-pinto.mp3",
+    "/sons/eu-finjo-que-nao-percebo-mas-tudo-esta-sendo-obs.mp3",
+    "/sons/eu-tentei.mp3",
+    "/sons/ja-ganhou-tantantan.mp3",
+    "/sons/lapadadokarai.mp3",
+    "/sons/lula-free-fire.mp3",
+    "/sons/lula-vai-todo-mindo-se-fdr.mp3",
+    "/sons/manoel-g-lana.mp3",
+    "/sons/manoel-g-quem-manda-e-a-muie.mp3",
+    "/sons/miau-triste.mp3",
+    "/sons/se-quiser-sim-mano.mp3",
+    "/sons/so-quer-mamao-so-quer-mel.mp3"
+];
+
 let currentQuestionIndex = 0;
 let selectedAnswers = [];
 
@@ -221,7 +246,9 @@ function showResult() {
 
     document.getElementById("result").classList.remove("hidden");
 
+    const randomAudio = audioFiles[Math.floor(Math.random() * audioFiles.length)];
     const audio = document.getElementById("result-audio");
+    audio.src = randomAudio;
     audio.play();
 }
 
